@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Welcome to WallessPKU!</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+.english {
+  color: gray;
+}
+    </style>
+</head>
+<body>
+<div class="container">
+    <p>验证通过! <span class="english">You've passed the verification!</span></p>
+
+    <p>
+        我们所使用的客户端是 Clash. 您需要安装客户端, 并将下面的订阅地址填入客户端, 就可以使用我们的服务器翻墙.<br>
+        <span class="english">Our client software is called Clash.
+        You need to install Clash and use a subscription link to use our server to circumvent the censorship.</span>
+    </p>
+
+    <p>
+        您的 Clash 订阅地址为: <span class="english">Your Clash subscription link is:</span><br>
+        {{clash_sub_url}}<br>
+        请保存这个地址; 在稍后的操作中会用到这个订阅地址. <span class="english">Save this link to your computer for later use.</span>
+    </p>
+
+    <p>
+        下面这个连接会告诉您客户端的下载地址和操作方式:
+        <span class="english">Open the following link to read the instructions to Clash: </span><br>
+        <a href="https://blog.189854.xyz/blog/" target="_blank">使用手册 Instructions</a>.<br>
+        您可以保存上述地址以备日后查看. <span class="english">You may want to save the above link for future use.</span>
+
+    </p>
+
+
+    <p>
+        要查看您的账户信息, 包括流量记录等, 请保存 profile:
+        <span class="english">To view your account profile, use/save the following link:</span><br>
+        <a href="{{profile_url}}" target="_blank">{{profile_url}}</a> <br>
+        <span style="font-weight: bolder">(它不是订阅地址! This is not the subs link!)</span>
+    </p>
+</div>
+
+</body>
+</html>

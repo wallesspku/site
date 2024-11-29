@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>WallessPKU User Profile</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.4/dist/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="panel-group">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Subscription</div>
+            <div class="panel-body">
+                你的 Clash 订阅地址是 (Your clash subscription address is): <br>
+                <input readonly value="{{clash_sub_url}}" size="60"/> <br>
+
+                请将这个地址复制到你的客户端对应的的地方. 它适用于任何平台的客户端. <br>
+                Copy the above link to the client according to our introduction. It is platform-irrelevant.
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Basic Information</h4>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <th scope="row">Email</th>
+                        <td>{{ email }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">User Name</th>
+                        <td>{{ name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Register Date</th>
+                        <td>{{ register_day }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Last Active Date</th>
+                        <td>{{ last_active_day }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Data Usage</h4>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <th scope="row">Percentage</th>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: {{ percentage }}%" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                                {{ percentage }}% Used
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Data Balance</th>
+                        <td>{{ balance }} / {{ total_quota }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Data Quota</th>
+                        <td>{{ data_per_day }} / day</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Total Upload (unweighted)</th>
+                        <td>{{ upload }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Total Download (unweighted)</th>
+                        <td>{{ download }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Total Transferred (unweighted)</th>
+                        <td>{{ total_data_formatted }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Recent Data Record</h4>
+            </div>
+            <div class="panel-body">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Upload</th>
+                        <th scope="col">Download</th>
+                        <th scope="col">Data Transferred</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for act in activities %}
+                    <tr>
+                        <th scope="row">{{ act.date }}</th>
+                        <td>{{ act.upload }}</td>
+                        <td>{{ act.download }}</td>
+                        <td>{{ act.total }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

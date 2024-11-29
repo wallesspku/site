@@ -1,0 +1,8 @@
+django
+python-dateutil
+pyyaml
+requests
+dkimpy
+mssql-django
+mysqlclient
+shortuuid
