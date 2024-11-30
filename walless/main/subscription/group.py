@@ -75,7 +75,7 @@ class Group(ClashNode):
             new_nodes = cluster[:to_keep]
             for i, node in enumerate(new_nodes):
                 old_i = node_pattern.findall(node.name)[0][1]
-                node.name = node.name.replace(f'{key[0]}{old_i}', f'{key[0]}{i}')
+                node.name = node.name.replace(f'{key[0]}{old_i}', f'{key[0]}{i+1}')
             nodes.extend(new_nodes)
 
         nodes.sort()
