@@ -52,8 +52,8 @@ class Node(Model):
         return data_format(self.upload + self.download, decimal=True)
     
     @property
-    def visible(self) -> bool:
-        return not self.hidden and not self.deleted
+    def visible(self) -> str:
+        return 'yes' if (not self.hidden and not self.deleted) else 'NO'
 
     def __str__(self):
         return f'<Node {self.node_id} {self.name}>'
