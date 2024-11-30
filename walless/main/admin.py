@@ -41,6 +41,8 @@ class UserAdmin(admin.ModelAdmin):
     @admin.decorators.display(description='traffic', boolean=False, ordering='download')
     def traffic(self, obj) -> float:
         return data_format(obj.upload + obj.download, decimal=True)
+    
+    fields = ['enabled', 'email', 'password', 'tag', 'enabled', 'properties', 'last_change', 'balance', 'remarks']
 
 
 class RelayAdmin(admin.ModelAdmin):
