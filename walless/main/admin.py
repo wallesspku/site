@@ -5,7 +5,7 @@ from . import models
 class NodeAdmin(admin.ModelAdmin):
     ordering = ['node_id']  # Sort by 'node_id' in ascending order
     list_filter = ['deleted', 'hidden', 'tag']  # Add filters to the right side
-    list_display = ['name', 'node_id', 'idc', 'tag', 'traffic', 'visible']
+    list_display = ['name', 'visible', 'node_id', 'idc', 'tag', 'traffic']
 
     @admin.decorators.display(description='visible', boolean=True)
     def visible(self, obj):
