@@ -47,10 +47,6 @@ class Node(Model):
     upload = BigIntegerField(null=False, default=0)
     download = BigIntegerField(null=False, default=0)
 
-    @property
-    def traffic(self) -> str:
-        return data_format(self.upload + self.download, decimal=True)
-
     def __str__(self):
         return f'<Node {self.node_id} {self.name}>'
     
@@ -86,10 +82,6 @@ class User(Model):
     balance = BigIntegerField(null=False, default=(20 * 2**30))
     # remarks
     remarks = TextField(max_length=2048, null=True, blank=True)
-
-    @property
-    def traffic(self) -> str:
-        return data_format(self.upload + self.download, decimal=True)
 
     class Meta:
         indexes = [

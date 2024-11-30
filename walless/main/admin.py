@@ -10,6 +10,10 @@ class NodeAdmin(admin.ModelAdmin):
     @admin.decorators.display(description='visible', boolean=True)
     def visible(self, obj):
         return not obj.hidden and not obj.deleted
+    
+    @admin.decorators.display(description='traffic (TiB)', boolean=False)
+    def traffic(self, obj) -> float:
+        return round((obj.upload + obj.download)/1024**4, 2)
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -17,6 +21,10 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = ['tag', 'enabled']
     list_display = ['email', 'user_id', 'tag', 'enabled', 'traffic']
     search_fields = ['email', 'user_id']
+    
+    @admin.decorators.display(description='traffic (GiB)', boolean=False)
+    def traffic(self, obj) -> float:
+        return round((obj.upload + obj.download)/1024**3, 2)
 
 
 class RelayAdmin(admin.ModelAdmin):
