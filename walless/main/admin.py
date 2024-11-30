@@ -42,7 +42,7 @@ class UserAdmin(admin.ModelAdmin):
     def traffic(self, obj) -> float:
         return data_format(obj.upload + obj.download, decimal=True)
     
-    fields = ['enabled', 'email', 'password', 'tag', 'properties', 'last_change', 'balance', 'remarks']
+    fields = ['enabled', 'email', 'password', 'tag', 'last_change', 'balance', 'remarks']
 
 
 class RelayAdmin(admin.ModelAdmin):
