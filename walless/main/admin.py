@@ -1,5 +1,6 @@
 from django.contrib import admin
 from . import models
+from walless_utils import data_format
 
 
 class NodeAdmin(admin.ModelAdmin):
@@ -11,9 +12,9 @@ class NodeAdmin(admin.ModelAdmin):
     def visible(self, obj):
         return not obj.hidden and not obj.deleted
     
-    @admin.decorators.display(description='traffic (TiB)', boolean=False)
+    @admin.decorators.display(description='traffic', boolean=False, ordering='download')
     def traffic(self, obj) -> float:
-        return round((obj.upload + obj.download)/1024**4, 2)
+        return data_format(obj.upload + obj.download, decimal=True)
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -22,9 +23,9 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ['email', 'user_id', 'tag', 'enabled', 'traffic']
     search_fields = ['email', 'user_id']
     
-    @admin.decorators.display(description='traffic (GiB)', boolean=False)
+    @admin.decorators.display(description='traffic', boolean=False, ordering='download')
     def traffic(self, obj) -> float:
-        return round((obj.upload + obj.download)/1024**3, 2)
+        return data_format(obj.upload + obj.download, decimal=True)
 
 
 class RelayAdmin(admin.ModelAdmin):
