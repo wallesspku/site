@@ -15,6 +15,21 @@ class NodeAdmin(admin.ModelAdmin):
     @admin.decorators.display(description='traffic', boolean=False, ordering='download')
     def traffic(self, obj) -> float:
         return data_format(obj.upload + obj.download, decimal=True)
+    
+    fieldsets = [
+        (
+            None,
+            {
+                "fields": ["node_id", "name", "weight", "ipv4", "ipv6", 'idc', 'remarks'],
+            },
+        ),
+        (
+            "Advanced",
+            {
+                "fields": ["hidden", "deleted", 'tag', 'properties'],
+            },
+        ),
+    ]
 
 
 class UserAdmin(admin.ModelAdmin):
