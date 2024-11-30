@@ -50,6 +50,10 @@ class Node(Model):
     @property
     def traffic(self) -> str:
         return data_format(self.upload + self.download, decimal=True)
+    
+    @property
+    def visible(self) -> bool:
+        return not self.hidden and not self.deleted
 
     def __str__(self):
         return f'<Node {self.node_id} {self.name}>'
