@@ -68,7 +68,7 @@ CONFIG_TEMPLATE = {
     'mixed-port': 7890,
     'port': 7891,
     'socks-port': 7892,
-    'allow-lan': True,
+    'allow-lan': False,
     'mode': 'Rule',
     'log-level': 'info',
     'external-controller': '127.0.0.1:9090',

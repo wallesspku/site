@@ -3,6 +3,7 @@ import time
 import copy
 from copy import deepcopy
 from functools import lru_cache
+import shortuuid
 
 import yaml
 from walless_utils import data_format, node_pool, cfg
@@ -23,6 +24,7 @@ class ClashYAML:
 
     def complete_config(self, groups: Dict[str, Group], ur: UserRequest):
         clash_cfg = copy.deepcopy(CONFIG_TEMPLATE)
+        clash_cfg['secret'] = shortuuid.uuid()
         if ur.use_dns:
             clash_cfg['dns'] = DEFAULT_DNS
 
