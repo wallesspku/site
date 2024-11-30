@@ -9,7 +9,7 @@ from ..util import Dumper
 from ..constants import PROVIDER_GROUPS, HEALTH_CHECK_CFGS
 from .user_request import UserRequest
 
-node_pattern = re.compile(r'([A-Z]{2}-[A-Za-z])+\d+')
+node_pattern = re.compile(r'([A-Z]{2}-[A-Za-z]+)(\d+)')
 
 
 @dataclass
@@ -64,7 +64,7 @@ class Group(ClashNode):
                 nodes.append(node)
                 continue
             else:
-                key = (fetched[0], node.ip_protocol)
+                key = (fetched[0][0], node.ip_protocol)
                 clusters[key].append(node)
 
         for key, cluster in clusters.items():
@@ -72,7 +72,11 @@ class Group(ClashNode):
             # TODO: make this configurable
             ur.rng.shuffle(cluster)
             to_keep = 2
-            nodes.extend(cluster[:to_keep])
+            new_nodes = cluster[:to_keep]
+            for i, node in enumerate(new_nodes):
+                old_i = node_pattern.findall(node.name)[0][1]
+                node.name = node.name.replace(f'{key[0]}{old_i}', f'{key[0]}{i}')
+            nodes.extend(new_nodes)
 
         nodes.sort()
         self.nodes = nodes
