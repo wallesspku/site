@@ -26,7 +26,7 @@ class NodeAdmin(admin.ModelAdmin):
         (
             "Advanced",
             {
-                "fields": ["hidden", "deleted", 'tag', 'properties', 'refresh_day', 'traffic_limit'],
+                "fields": ["hidden", "deleted", 'tag', 'properties', 'traffic_reset_day', 'traffic_limit'],
             },
         ),
     ]
