@@ -77,6 +77,7 @@ class ClashYAML:
             for pn in gen_proxy_nodes(node, ur):
                 groups['gfw'].nodes.append(pn)
         groups['gfw'].cluster_nodes(ur)
+        groups['gfw'].nodes.sort()
 
         # adjust groups based on traffic direction and user type
         if ur.show_info:

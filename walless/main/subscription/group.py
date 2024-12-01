@@ -80,5 +80,4 @@ class Group(ClashNode):
                 node.node_order = node_orders[i]
             nodes.extend(new_nodes)
 
-        nodes.sort()
         self.nodes = nodes
