@@ -13,7 +13,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--days', type=int, default=180)
     
-    def handle(self, days: int):
+    def handle(self, days: int, **kwargs):
         setup_everything()
         max_to_disable = 100
         n_disabled = 0
