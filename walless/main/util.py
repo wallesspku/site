@@ -17,7 +17,10 @@ logger = logging.getLogger('walless')
 
 def setup_globals():
     log_path = os.path.expanduser('~/.var/log/walless_site.log')
-    setup_everything(log_paths=[log_path], pull_node=True, pull_user=True)
+    setup_everything(
+        log_paths=[log_path], pull_node=True, pull_user=True, 
+        user_pool_kwargs={'enable_only': False}
+    )
 
 
 def current_time():

@@ -19,7 +19,10 @@ config_setup()
 if os.environ.get("EARLY_SETUP", "0") == "1":
     walless_logger.warning("Early setup is enabled.")
     log_path = os.path.expanduser('~/.var/log/walless_site.log')
-    setup_everything(log_paths=[log_path], pull_node=True, pull_user=True)
+    setup_everything(
+        log_paths=[log_path], pull_node=True, pull_user=True, 
+        user_pool_kwargs={'enable_only': False}
+    )
 
 
 LOGGING = {
