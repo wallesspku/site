@@ -29,11 +29,11 @@ def register_user(email):
         user_pool.pull(True)
         user = user_pool.email2user.get(email)
         if user is not None:
-            if user.enable:
+            if user.enabled:
                 logger.warning("User already in database and it has been enabled. Addition aborted.")
                 return user
             else:
-                db.en_dis_able_user(email, True)
+                db.enable_user(user_id=user.user_id, enable=True)
                 logger.warning("User (disabled) already in database and it is enabled now. Addition aborted.")
                 return user
         username, domain = email.split('@')
