@@ -27,6 +27,7 @@ class UserRequest:
     _dns: bool = False
     _provider: bool = False
     _mix: Optional[bool] = None
+    user_provided_params: Dict[str, str] = dataclass.field(default_factory=dict)
 
     @property
     def mix(self):
@@ -67,9 +68,10 @@ class UserRequest:
                     ur.client = client_map[ur.client]
         else:
             ur.client, ur.client_version = 'unknown', 'unknown'
-
+        
         def parse_flag(key, default=None):
             if key in request.GET:
+                ur.user_provided_params[key] = request.GET.get(key)
                 return request.GET.get(key) == 'true'
             return default
 
@@ -77,7 +79,6 @@ class UserRequest:
         ur.client_version = request.GET.get('version', ur.client_version)
         ur._dns = parse_flag('dns')
         ur._provider = parse_flag('provider')
-        # grey tests TODO: remove randomness
         ur.cluster = parse_flag('cluster', True)
         ur.group = request.GET.get('group', None)
         if ur.group == 'scholar':
@@ -88,11 +89,16 @@ class UserRequest:
 
     def provider_args(self, group: str) -> str:
         additional_args = {'group': group}
+        if self.user_provided_params:
+            additional_args.update(self.user_provided_params)
         if self.client is not None:
             additional_args['client'] = self.client
         if self.client_version is not None:
             additional_args['version'] = self.client_version
-        return '?' + '&'.join([f'{k}={v}' for k, v in additional_args.items()])
+        if additional_args:
+            return '?' + '&'.join([f'{k}={v}' for k, v in additional_args.items()])
+        else:
+            return ''
     
     @property
     def use_cluster(self):
