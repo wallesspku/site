@@ -12,10 +12,10 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--days', type=int, default=180)
+        parser.add_argument('--limit', type=int, default=100)
     
-    def handle(self, days: int, **kwargs):
+    def handle(self, days: int, limit: int, **kwargs):
         setup_everything()
-        max_to_disable = 100
         n_disabled = 0
         thre = int(time.time()) - days * 86400
         for user in User.objects.filter(enabled=True):
@@ -25,5 +25,5 @@ class Command(BaseCommand):
                 logger.warning(f'Disabling user {user}')
                 user.save()
                 n_disabled += 1
-            if n_disabled == max_to_disable:
+            if n_disabled == limit:
                 break
