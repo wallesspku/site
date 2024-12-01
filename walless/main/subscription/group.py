@@ -73,11 +73,11 @@ class Group(ClashNode):
             ur.rng.shuffle(cluster)
             to_keep = 2
             new_nodes = cluster[:to_keep]
-            node_ids = sorted([n.node_id for n in new_nodes])
+            node_orders = sorted([n.node_order for n in new_nodes])
             for i, node in enumerate(new_nodes):
                 old_i = node_pattern.findall(node.name)[0][1]
                 node.name = node.name.replace(f'{key[0]}{old_i}', f'{key[0]}{i+1}')
-                node.node_id = node_ids[i]
+                node.node_order = node_orders[i]
             nodes.extend(new_nodes)
 
         nodes.sort()

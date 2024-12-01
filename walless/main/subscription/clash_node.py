@@ -66,9 +66,11 @@ class ProxyNode(ClashNode):
     uuid: str
     node_id: int
     db_name: str
-    # additional_args: Optional[Dict[str, Any]] = None
+    # by default, it is node_id
+    node_order: int = None
 
     def __post_init__(self):
+        self.node_order = self.node_id
         self.additional_config = dict()
 
     def clash(self) -> Dict[str, Any]:
@@ -77,7 +79,7 @@ class ProxyNode(ClashNode):
         return ret
 
     def sort_keys(self):
-        return self.ip_protocol, -self.priority, self.node_id,
+        return (self.ip_protocol, -self.priority, self._node_order)
 
     def __lt__(self, other):
         return self.sort_keys() < other.sort_keys()
