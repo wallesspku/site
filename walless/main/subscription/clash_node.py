@@ -79,7 +79,7 @@ class ProxyNode(ClashNode):
         return ret
 
     def sort_keys(self):
-        return (self.ip_protocol, -self.priority, self._node_order)
+        return (self.ip_protocol, -self.priority, self.node_order)
 
     def __lt__(self, other):
         return self.sort_keys() < other.sort_keys()
