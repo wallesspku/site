@@ -70,7 +70,8 @@ class ProxyNode(ClashNode):
     node_order: int = None
 
     def __post_init__(self):
-        self.node_order = self.node_id
+        if self.node_order is None:
+            self.node_order = self.node_id
         self.additional_config = dict()
 
     def clash(self) -> Dict[str, Any]:
