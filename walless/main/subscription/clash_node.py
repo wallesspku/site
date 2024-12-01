@@ -118,7 +118,7 @@ def gen_proxy_nodes(node: Node, ur: UserRequest) -> List[ProxyNode]:
             url = node.urls(ip_protocol) if ur.mix else node.real_urls(ip_protocol)
             ret.append(ProxyNode(
                 name=_rename_server(node.name, node.weight, ip_protocol),
-                port=node.port, url=url, priority=priority, ip_protocol=ip_protocol,
+                port=node.port, server=url, priority=priority, ip_protocol=ip_protocol,
                 tag=node.tag, uuid=ur.user.uuid, node_id=node.node_id, db_name=node.name
             ))
 
@@ -128,7 +128,7 @@ def gen_proxy_nodes(node: Node, ur: UserRequest) -> List[ProxyNode]:
             continue
         ret.append(ProxyNode(
             name=_rename_server(relay.name, relay.target.weight, 4),
-            port=relay.port, url=relay.source.urls(4), priority=priority, ip_protocol=4,
+            port=relay.port, server=relay.source.urls(4), priority=priority, ip_protocol=4,
             tag=relay.tag, uuid=ur.user.uuid, node_id=relay.relay_id, db_name=relay.name,
             node_order=(relay.target.node_id + 0.5)
         ))
