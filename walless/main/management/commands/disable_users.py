@@ -21,6 +21,7 @@ class Command(BaseCommand):
         for user in User.objects.filter(enabled=True):
             if user.last_activity < thre:
                 user.enabled = False
+                user.last_change = int(time.time())
                 logger.warning(f'Disabling user {user}')
                 user.save()
                 n_disabled += 1
