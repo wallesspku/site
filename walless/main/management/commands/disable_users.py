@@ -19,7 +19,7 @@ class Command(BaseCommand):
         n_disabled = 0
         thre = int(time.time()) - days * 86400
         for user in User.objects.filter(enabled=True):
-            if user.last_activity < thre:
+            if user.last_activity < thre and user.reg_time < thre:
                 user.enabled = False
                 user.last_change = int(time.time())
                 logger.warning(f'Disabling user {user}')
