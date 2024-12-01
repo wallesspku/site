@@ -11,7 +11,7 @@ class Command(BaseCommand):
     help = 'Disable inactive user'
 
     def add_arguments(self, parser):
-        parser.add_argument('days', type=int, default=180)
+        parser.add_argument('--days', type=int, default=180)
     
     def handle(self, days: int):
         setup_everything()
