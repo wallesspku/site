@@ -47,6 +47,11 @@ class Node(Model):
     upload = BigIntegerField(null=False, default=0)
     download = BigIntegerField(null=False, default=0)
 
+    # traffic plan; refresh day is the day of the month.
+    traffic_refresh_day = IntegerField(null=False, default=1)
+    # traffic unit is GiB.
+    traffic_limit = BigIntegerField(null=True, default=None, blank=True)
+
     def __str__(self):
         return f'<Node {self.node_id} {self.name}>'
     
