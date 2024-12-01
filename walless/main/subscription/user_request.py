@@ -1,6 +1,6 @@
 from typing import *
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import random
 
 from walless_utils import User, cfg
@@ -27,7 +27,7 @@ class UserRequest:
     _dns: bool = False
     _provider: bool = False
     _mix: Optional[bool] = None
-    user_provided_params: Dict[str, str] = dataclass.field(default_factory=dict)
+    user_provided_params: Dict[str, str] = field(default_factory=dict)
 
     @property
     def mix(self):
