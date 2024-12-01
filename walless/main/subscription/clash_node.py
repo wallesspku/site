@@ -110,7 +110,7 @@ def _rename_server(name, weight, ip_protocol: int) -> str:
 
 
 def gen_proxy_nodes(node: Node, ur: UserRequest) -> List[ProxyNode]:
-    priority = int('good' in node.tag)
+    priority = int('good' in node.properties)
     ret = list()
 
     # direct
