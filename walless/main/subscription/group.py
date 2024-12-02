@@ -69,9 +69,8 @@ class Group(ClashNode):
 
         for key, cluster in clusters.items():
             cluster.sort()
-            # TODO: make this configurable
-            to_keep = 2
-            selected = ur.rng.choices(cluster, k=to_keep, weights=[n.node_weight for n in cluster])
+            # TODO: make #nodes configurable
+            selected = weighted_sample(ur.rng, cluster, [n.node_weight for n in cluster], 2)
             node_orders = sorted([n.node_order for n in selected])
             for i, node in enumerate(selected):
                 old_i = node_pattern.findall(node.name)[0][1]
@@ -80,3 +79,17 @@ class Group(ClashNode):
             nodes.extend(selected)
 
         self.nodes = nodes
+
+
+def weighted_sample(rng, items, weights, k):
+    """
+    Sample without replacement from items with weights
+    """
+    k = min(len(items), k)
+    items, weights = items.copy(), weights.copy()
+    ret = []
+    while len(ret) < k:
+        i = rng.choices(list(range(len(items))), weights, k=1)[0]
+        ret.append(items.pop(i))
+        weights.pop(i)
+    return ret
