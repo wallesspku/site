@@ -68,6 +68,9 @@ class ProxyNode(ClashNode):
     db_name: str
     # by default, it is node_id
     node_order: int = None
+    # node weight = node traffic plan per month. by default it is set to 2000 (GiB)
+    # it is used to sample nodes for each cluster
+    node_weight: int = 2000
 
     def __post_init__(self):
         if self.node_order is None:
@@ -117,11 +120,13 @@ def gen_proxy_nodes(node: Node, ur: UserRequest) -> List[ProxyNode]:
     for ip_protocol in [4, 6]:
         if node.can_be_used_by(ur.user.tag, ip_protocol):
             url = node.urls(ip_protocol) if ur.mix else node.real_urls(ip_protocol)
-            ret.append(ProxyNode(
+            ret.append(pn := ProxyNode(
                 name=_rename_server(node.name, node.weight, ip_protocol),
                 port=node.port, server=url, priority=priority, ip_protocol=ip_protocol,
-                tag=node.tag, uuid=ur.user.uuid, node_id=node.node_id, db_name=node.name
+                tag=node.tag, uuid=ur.user.uuid, node_id=node.node_id, db_name=node.name,
             ))
+            if isinstance(node.traffic_limit, int):
+                pn.node_weight = node.traffic_limit
 
     # relay
     for relay in node.relay_out:
