@@ -55,6 +55,6 @@ def reset_user(email, password):
         if user.password != password:
             raise Http404("User/Password Error")
         logger.warning(f"User {user.email} just reset itself.")
-        db.reset_user(email, password=base36(8), uuid=user_uuid())
+        db.reset_user(user.user_id, password=base36(8), uuid=user_uuid())
         user_pool.pull(True)
         return user_pool.email2user[email]
