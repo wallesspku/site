@@ -7,7 +7,7 @@ import logging
 from walless_utils import db, user_pool
 from django.http import Http404
 
-from ..models import User
+from ..models import User, user_uuid
 
 reg_lock = Lock()
 logger = logging.getLogger('walless')
@@ -47,12 +47,14 @@ def register_user(email):
 
 
 def reset_user(email, password):
-    users = db.get_user_by_email(email)
-    if len(users) == 0:
-        raise Http404("User/Password Error")
-    user = users[0]
-    if user.password != password:
-        raise Http404("User/Password Error")
-    logger.info(f"User {user.email} just reset its password and uuid.")
-    db.reset_user(email, password=base36(8), uuid=uuid.uuid4())
-    return db.get_user_by_email(email)[0]
+    with reg_lock:
+        user_pool.pull(True)
+        user = user_pool.email2user.get(email)
+        if user is None:
+            raise Http404("User/Password Error")
+        if user.password != password:
+            raise Http404("User/Password Error")
+        logger.warning(f"User {user.email} just reset itself.")
+        db.reset_user(email, password=base36(8), uuid=user_uuid())
+        user_pool.pull(True)
+        return user_pool.email2user[email]
