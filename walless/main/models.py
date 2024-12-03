@@ -81,12 +81,14 @@ class User(Model):
     reg_time = IntegerField(null=False, default=current_unix)
     last_activity = IntegerField(null=False, default=current_unix)
     last_change = IntegerField(null=False, default=current_unix)
+    last_rotation = IntegerField(null=True)
     # unit: byte
     upload = BigIntegerField(null=False, default=0)
     download = BigIntegerField(null=False, default=0)
     balance = BigIntegerField(null=False, default=(20 * 2**30))
     # remarks
     remarks = TextField(max_length=2048, null=True, blank=True)
+
 
     class Meta:
         indexes = [
