@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import yaml
 from collections import defaultdict
 
-from .clash_node import ClashNode, ProxyNode, InfoNode
+from .clash_node import LogicNode, ProxyNode, InfoNode
 from ..util import Dumper
 from ..constants import PROVIDER_GROUPS, HEALTH_CHECK_CFGS
 from .user_request import UserRequest
@@ -13,10 +13,10 @@ node_pattern = re.compile(r'([A-Z]{2}-[A-Za-z]+)(\d+)')
 
 
 @dataclass
-class Group(ClashNode):
+class Group(LogicNode):
     # group can also be used as clash node
     name: str
-    nodes: List[ClashNode]
+    nodes: List[LogicNode]
     key: str | None = None
     select_type: str = 'select'
 

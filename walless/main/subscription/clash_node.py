@@ -11,11 +11,21 @@ from walless_utils import cfg
 logger = logging.getLogger('walless')
 
 
-class ClashNode:
+class LogicNode:
+    """
+    Logic node can be:
+    1. An actual proxy server, with inbound/outbound on the same node
+    note that the v4/v6 ingresses are treated as 2 logic nodes
+    2. A relay server, with inbound on one node and outbound on another node
+    3. A sentinel node, which is either direct or reject. It does not proxy any traffic
+    4. An info node, which is a node that provides information about the subscription
+    5. A group can also be a node. it routes the traffic to the nodes in the group
+    useful for clash config
+    """
     name: str
 
-    # an entry in clash
     def clash(self):
+        # return clash config entry
         raise NotImplementedError
 
     def sort_keys(self):
@@ -25,7 +35,7 @@ class ClashNode:
         return self.sort_keys() < other.sort_keys()
 
 
-class SentinelNode(ClashNode):
+class SentinelNode(LogicNode):
     # for direct and reject
     def __init__(self, name: str):
         self.name = name
@@ -43,7 +53,7 @@ class SentinelNode(ClashNode):
 direct_node, reject_node = SentinelNode('DIRECT'), SentinelNode('REJECT')
 
 
-class InfoNode(ClashNode):
+class InfoNode(LogicNode):
     def __init__(self, name: str):
         self.name = name
 
@@ -55,7 +65,7 @@ class InfoNode(ClashNode):
 
 
 @dataclass
-class ProxyNode(ClashNode):
+class ProxyNode(LogicNode):
     name: str
     port: int
     server: str
@@ -113,13 +123,20 @@ def _rename_server(name, weight, ip_protocol: int) -> str:
 
 
 def gen_proxy_nodes(node: Node, ur: UserRequest) -> List[ProxyNode]:
+    """
+    Collect all possile proxy nodes from a "node" object in the database,
+    include v4, v6 (if available), and relay nodes.
+    """
     priority = int('good' in node.properties)
     ret = list()
 
     # direct
     for ip_protocol in [4, 6]:
         if node.can_be_used_by(ur.user.tag, ip_protocol):
-            url = node.urls(ip_protocol) if ur.mix else node.real_urls(ip_protocol)
+            if ur.mix and ip_protocol == 4:
+                url = node.urls(ip_protocol)
+            else:
+                url = node.real_urls(ip_protocol)
             ret.append(pn := ProxyNode(
                 name=_rename_server(node.name, node.weight, ip_protocol),
                 port=node.port, server=url, priority=priority, ip_protocol=ip_protocol,
