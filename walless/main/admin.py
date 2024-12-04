@@ -47,11 +47,15 @@ class UserAdmin(admin.ModelAdmin):
 
 class RelayAdmin(admin.ModelAdmin):
     ordering = ['relay_id']
-    list_display = ['relay_id', 'source', 'target']
+    list_display = ['name', 'source', 'target', 'tag', 'visible']
+
+    @admin.decorators.display(description='visible', boolean=True)
+    def visible(self, obj):
+        return not obj.hidden
 
 
 class MixAdmin(admin.ModelAdmin):
-    list_display = ['id', 'source', 'target']
+    list_display = ['id', 'source', 'target', 'scope']
 
 
 admin.site.register(models.Push)
