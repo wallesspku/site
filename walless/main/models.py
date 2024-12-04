@@ -66,7 +66,7 @@ class Mix(Model):
     source = ForeignKey(Node, on_delete=CASCADE, related_name='mix_source')
     target = ForeignKey(Node, on_delete=CASCADE, related_name='mix_target')
     # this could either be edu or cn
-    scope = CharField(max_length=30, null=False, default='edu', choices=['edu', 'default'])
+    scope = CharField(max_length=30, null=False, default='edu', choices={'edu': 'edu', 'default': 'default'})
 
     def __str__(self) -> str:
         return f'<Mix {self.source} to {self.target}, {self.scope}>'
