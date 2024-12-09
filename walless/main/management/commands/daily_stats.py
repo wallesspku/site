@@ -1,14 +1,13 @@
 from django.core.management.base import BaseCommand
 import os
 import logging
-from datetime import timedelta, datetime, timezone
-from collections import defaultdict
+from datetime import timedelta, datetime, timezone, date
 import time
 
 from tabulate import tabulate
 
 from walless_utils import setup_everything, db, data_format, today
-from main.models import User, Traffic, UserTraffic, NodeTraffic
+from main.models import UserTraffic, NodeTraffic
 from .materialize_traffic import Command as Materialization
 
 reporter = logging.getLogger('sublog')
@@ -33,6 +32,7 @@ class Command(BaseCommand):
             'user_data': list(),
             'node_data': list(),
             'daily_active_user': 0,
+            'monthly_active_user': 0,
             'data': {
                 'upload': 0,
                 'download': 0,
@@ -57,12 +57,17 @@ class Command(BaseCommand):
         for ut in UserTraffic.objects.filter(ut_date=day):
             user2traffic[ut.user_id] = ut.upload + ut.download
         def threshold(th, name):
-            n = len(list(user2traffic.values()))
+            n = len([1 for t in user2traffic.values() if t > th])
             stats['user_data'].append([f'users (>{name})', n])
         threshold(2**20, '1MB')
         threshold(2**27, '128MB')
         threshold(2**30, '1GB')
-        stats['daily_active_user'] = len(user2traffic)
+
+        def num_active(day: date):
+            return len([1 for u in all_users if u.last_active_day >= day])
+
+        stats['daily_active_user'] = num_active(today() - timedelta(days=1))
+        stats['monthly_active_user'] = num_active(today() - timedelta(days=30))
         stats['data'] = {k: data_format(v, decimal=True) for k, v in stats['data'].items()}
 
         # traffic plan       
@@ -79,8 +84,8 @@ class Command(BaseCommand):
             traffic_percentage = round(traffic / limit * 100)
             stats['plan'].append([
                 node.name, node.idc,
-                f'{passed.days}/{span.days} ({time_percentage}%)',
-                f'{round(traffic/1024**4, 2)}/{round(limit/1024**4, 2)} ({traffic_percentage}%)'
+                str(passed.days).ljust(2) + f' {time_percentage}%',
+                f'{round(traffic/1024**4, 1)}/{round(limit/1024**4, 1)}'.ljust(9) + f' {traffic_percentage}%'
             ])
 
         return stats
@@ -97,19 +102,23 @@ class Command(BaseCommand):
         stats = self.stats_day(yesterday)
         logger.warning('Doing daily stats. `stats_one_day` took %.2f seconds' % (time.time() - since))
 
-        to_warn = [
-            f'#daily\\_stats of {yesterday}',
-            f"total users: {stats['total_user']} ({stats['new_user']} new)",
-            f"total data: {stats['total_data']}",
-            f"daily active {stats['daily_active_user']}",
-            f"traffic {stats['data']['total']} (u={stats['data']['upload']}, d={stats['data']['download']})"
+        lines = [
+            ['traffic', stats['data']['total']],
+            ['new users', stats['new_user']],
+            ['daily active', stats['daily_active_user']],
+            ['monthly active', stats['monthly_active_user']],
         ]
-        for head, n in stats['user_data']:
-            to_warn.append(head + ': ' + str(n))
-        reporter.warning('\n'.join(to_warn))
+        for k, v in stats['user_data']:
+            lines.append([k, v])
+        lines.extend([
+            ['total users', f"{stats['total_user']}"],
+            ['total traffic', stats['total_data']],
+        ])
+        to_warn = f'#daily\\_stats of {yesterday}\n```\n' + tabulate(lines, tablefmt='plain') + '\n```'
+        reporter.warning(to_warn)
         time.sleep(1)
 
         reporter.warning('```\n'+tabulate(stats['node_data'], headers=['Node', 'Traffic'])+'\n```')
         time.sleep(1)
 
-        reporter.warning('```\n'+tabulate(stats['plan'], headers=['Node', 'IDC', 'Time (days)', 'Traffic (TiB)'])+'\n```')
+        reporter.warning('```\n'+tabulate(stats['plan'], headers=['Node', 'IDC', 'Days', 'Traffic (TiB)'])+'\n```')
