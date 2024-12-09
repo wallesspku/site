@@ -69,7 +69,7 @@ class Command(BaseCommand):
         node_traffics = list(NodeTraffic.objects.filter(ut_date__gt=today()-timedelta(days=32)))
         stats['plan'] = []
         for node in nodes:
-            if node.traffic_limit is None:
+            if node.traffic_limit is None or node.deleted:
                 continue
             span = node.next_reset_day() - node.last_reset_day()
             passed = today() - node.last_reset_day()
