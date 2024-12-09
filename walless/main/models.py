@@ -188,6 +188,44 @@ class Traffic(Model):
         return f'<Traffic {self.ut_date} {self.user} {self.node}>'
 
 
+class UserTraffic(Model):
+    # Traffic with node reduced
+    user_traffic_id = AutoField(primary_key=True)
+    ut_date = DateField(null=False)
+    user = ForeignKey(User, on_delete=CASCADE)
+    upload = BigIntegerField(null=False, default=0)
+    download = BigIntegerField(null=False, default=0)
+
+    class Meta:
+        indexes = [
+            Index(fields=['ut_date'], name="user_traffic_date"),
+            Index(fields=['user'], name="user_traffic_user"),
+            Index(fields=['user', 'ut_date'], name="user_traffic_user_date"),
+        ]
+    
+    def __str__(self):
+        return f'<User Traffic {self.ut_date} {self.user}>'
+
+
+class NodeTraffic(Model):
+    # Traffic with user reduced
+    node_traffic_id = AutoField(primary_key=True)
+    ut_date = DateField(null=False)
+    node = ForeignKey(Node, on_delete=CASCADE)
+    upload = BigIntegerField(null=False, default=0)
+    download = BigIntegerField(null=False, default=0)
+
+    class Meta:
+        indexes = [
+            Index(fields=['ut_date'], name="node_traffic_date"),
+            Index(fields=['node'], name="node_traffic_node"),
+            Index(fields=['node', 'ut_date'], name="node_traffic_node_date"),
+        ]
+    
+    def __str__(self):
+        return f'<Node Traffic {self.ut_date} {self.node}>'
+
+
 class TrafficLog(Model):
     log_id = AutoField(primary_key=True)
     user = ForeignKey(User, on_delete=CASCADE, related_name='user_traffic_log')
