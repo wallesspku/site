@@ -72,7 +72,7 @@ class ClashYAML:
     def _get_proxy(self, ur: UserRequest) -> Dict[str, Group]:
         groups = {'gfw': Group(name=GROUPS['gfw'], nodes=[], key='gfw')}
         for node in node_pool.all_nodes(True):
-            if node.hidden:
+            if node.hidden or node.deleted:
                 continue
             for pn in gen_proxy_nodes(node, ur):
                 groups['gfw'].nodes.append(pn)
@@ -83,7 +83,7 @@ class ClashYAML:
         if ur.show_info:
             groups['info'] = Group(name=GROUPS['info'], nodes=[], key='info')
             groups['info'].nodes = [InfoNode(line) for line in self._get_push_msg(ur.user)]
-        
+
         if ur.is_gfw and not ur.simple:
             groups['acceleration'] = Group(
                 name=GROUPS['acceleration'], key='acceleration',
