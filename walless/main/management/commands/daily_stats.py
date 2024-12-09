@@ -3,9 +3,12 @@ import os
 import logging
 from datetime import timedelta, datetime, timezone
 from collections import defaultdict
-from main.models import User, Traffic, UserTraffic, NodeTraffic
 import time
-from walless_utils import setup_everything, db, data_format
+
+from tabulate import tabulate
+
+from walless_utils import setup_everything, db, data_format, today
+from main.models import User, Traffic, UserTraffic, NodeTraffic
 from .materialize_traffic import Command as Materialization
 
 reporter = logging.getLogger('sublog')
@@ -34,17 +37,20 @@ class Command(BaseCommand):
                 'upload': 0,
                 'download': 0,
                 'total': 0,
-            }
+            },
         }
         # Node traffic info
-        uuid2node = {node.uuid: node for node in db.all_servers(include_delete=True)}
+        nodes = db.all_servers(include_delete=True)
+        uuid2node = {node.uuid: node for node in nodes}
         for nt in NodeTraffic.objects.filter(ut_date=day):
             stats['node_data'].append([
-                uuid2node[nt.node_id].name, data_format(nt.upload+nt.download, decimal=True)
+                uuid2node[nt.node_id].name, nt.upload+nt.download
             ])
             stats['data']['upload'] += nt.upload
             stats['data']['download'] += nt.download
         stats['data']['total'] = stats['data']['upload'] + stats['data']['download']
+        stats['node_data'].sort(key=lambda x: x[1], reverse=True)
+        stats['node_data'] = [[x[0], data_format(x[1], decimal=True)] for x in stats['node_data']]
         
         # User traffic info
         user2traffic = dict()
@@ -58,6 +64,25 @@ class Command(BaseCommand):
         threshold(2**30, '1GB')
         stats['daily_active_user'] = len(user2traffic)
         stats['data'] = {k: data_format(v, decimal=True) for k, v in stats['data'].items()}
+
+        # traffic plan       
+        node_traffics = list(NodeTraffic.objects.filter(ut_date__gt=today()-timedelta(days=32)))
+        stats['plan'] = []
+        for node in nodes:
+            if node.traffic_limit is None:
+                continue
+            span = node.next_reset_day() - node.last_reset_day()
+            passed = today() - node.last_reset_day()
+            time_percentage = round(passed / span * 100)
+            traffic = sum([x.upload + x.download for x in node_traffics if x.node_id == node.uuid and x.ut_date >= node.last_reset_day()])
+            limit = node.traffic_limit * 1024**3
+            traffic_percentage = round(traffic / limit * 100)
+            stats['plan'].append([
+                node.name, node.idc,
+                f'{passed.days}/{span.days} ({time_percentage}%)',
+                f'{round(traffic/1024**4, 2)}/{round(limit/1024**4, 2)} ({traffic_percentage}%)'
+            ])
+
         return stats
     
     def handle(self, **kwargs):
@@ -83,7 +108,8 @@ class Command(BaseCommand):
             to_warn.append(head + ': ' + str(n))
         reporter.warning('\n'.join(to_warn))
         time.sleep(1)
-        to_warn = []
-        for node_name, n in stats['node_data']:
-            to_warn.append(node_name + ': ' + n)
-        reporter.warning('\n'.join(to_warn))
+
+        reporter.warning('```\n'+tabulate(stats['node_data'], headers=['Node', 'Traffic'])+'\n```')
+        time.sleep(1)
+
+        reporter.warning('```\n'+tabulate(stats['plan'], headers=['Node', 'IDC', 'Time (days)', 'Traffic (TiB)'])+'\n```')
