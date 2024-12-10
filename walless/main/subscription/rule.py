@@ -4,7 +4,6 @@ import yaml
 from functools import lru_cache
 
 from ..constants import GROUPS
-from ..util import Dumper
 
 
 class Rule:
@@ -50,7 +49,7 @@ class Rule:
     @lru_cache(128)
     def rule_yaml(self, is_gfw, host, simple):
         rules = self._get_rule_list(is_gfw, host, simple)
-        return yaml.dump({'rules': rules}, Dumper=Dumper, default_flow_style=False)
+        return yaml.dump({'rules': rules}, default_flow_style=False)
 
     def _get_rule_list(self, is_gfw, host, simple):
         if not is_gfw:
