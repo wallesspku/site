@@ -1,11 +1,13 @@
 import datetime
 import logging
+import re
 import os
 
 from django.http import HttpResponse
 from walless_utils import setup_everything, current_time
 
 logger = logging.getLogger('walless')
+email_pat = re.compile(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+')
 
 
 def setup_globals():
