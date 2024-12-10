@@ -1,4 +1,3 @@
-import uuid
 import time
 import random
 from threading import Lock

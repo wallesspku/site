@@ -1,4 +1,4 @@
-from typing import *
+from typing import List, Tuple, Dict, Any
 import logging
 from dataclasses import dataclass
 

@@ -5,7 +5,6 @@ import yaml
 from collections import defaultdict
 
 from .clash_node import LogicNode, ProxyNode, InfoNode
-from ..util import Dumper
 from ..constants import PROVIDER_GROUPS, HEALTH_CHECK_CFGS
 from .user_request import UserRequest
 
@@ -26,7 +25,7 @@ class Group(LogicNode):
             entries = [node.clash() for node in self.nodes if isinstance(node, ProxyNode) or isinstance(node, InfoNode)]
         else:
             entries = [{'type': 'socks5', 'name': 'disabled', 'server': 'localhost', 'port': 1}]
-        return yaml.dump({'proxies': entries}, Dumper=Dumper, default_flow_style=False)
+        return yaml.dump({'proxies': entries}, default_flow_style=False)
 
     # behavior as a node
     def clash(self):

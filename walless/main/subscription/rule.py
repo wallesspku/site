@@ -3,7 +3,7 @@ import copy
 import yaml
 from functools import lru_cache
 
-from ..constants import *
+from ..constants import GROUPS
 from ..util import Dumper
 
 

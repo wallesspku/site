@@ -8,9 +8,11 @@ import yaml
 from walless_utils import data_format, node_pool, cfg
 
 from .rule import Rule
-from ..constants import *
+from ..constants import (
+    CONFIG_TEMPLATE, GROUPS, GROUP_ORDER, PROVIDER_GROUPS, 
+    HEALTH_CHECK_CFGS, DEFAULT_DNS
+)
 from ..models import Push
-from ..util import Dumper
 from .clash_node import ProxyNode, gen_proxy_nodes, InfoNode, direct_node
 from .user_request import UserRequest
 from .group import Group
@@ -54,7 +56,7 @@ class ClashYAML:
         clash_cfg['proxy-groups'].sort(key=lambda x: [GROUPS[name] for name in GROUP_ORDER].index(x['name']))
 
         rule_yaml = self._rule.rule_yaml(ur.is_gfw, ur.client, simple=ur.simple)
-        config_yaml = yaml.dump(clash_cfg, Dumper=Dumper, default_flow_style=False)
+        config_yaml = yaml.dump(clash_cfg, default_flow_style=False)
         final_yaml = config_yaml + '\n' + rule_yaml
         return final_yaml
 

@@ -6,7 +6,6 @@ from django.db.models import (
 )
 import shortuuid
 
-from walless_utils import data_format
 from .constants import MAX_EMAIL_HEADER_LENGTH
 
 

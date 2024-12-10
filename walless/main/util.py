@@ -1,17 +1,10 @@
 import datetime
 import logging
 import os
-import re
-
-try:
-    from yaml import CLoader as Loader, CDumper as Dumper
-except ImportError:
-    from yaml import Loader, Dumper
 
 from django.http import HttpResponse
-from walless_utils import setup_everything
+from walless_utils import setup_everything, current_time
 
-email_pat = re.compile(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+')
 logger = logging.getLogger('walless')
 
 
@@ -21,11 +14,6 @@ def setup_globals():
         log_paths=[log_path], pull_node=True, pull_user=True, 
         user_pool_kwargs={'enable_only': False}
     )
-
-
-def current_time():
-    tz = datetime.timezone(offset=datetime.timedelta(hours=8))
-    return datetime.datetime.now(tz=tz)
 
 
 def next_refresh() -> int:
