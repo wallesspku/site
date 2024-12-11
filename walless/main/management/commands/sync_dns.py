@@ -32,7 +32,7 @@ class Command(BaseCommand):
 
         # apply the mix settings on DB to huawei cloud, if mismatched
         # only ipv4 (A record) will be mapped
-        for node in self.nodes:
+        for node in nodes:
             for scope in ['default', 'edu']:
                 if node.ip(4) is None:
                     continue
