@@ -16,9 +16,9 @@ class Command(BaseCommand):
         setup_everything(log_paths=[os.path.expanduser('~/.var/log/walless_cron.log')])
         nodes = db.all_servers(get_mix=True, get_relays=True, include_delete=False)
         cf = Cloudflare()
-        cf.apply(nodes)
+        cf.apply_nodes(nodes)
         hw = Huawei(cfg['huawei'])
-        hw.apply(nodes)
+        hw.apply_nodes(nodes)
 
         # apply the ipv4/ipv6 records on DB to cloudflare, if mismatched
         for node in nodes:
