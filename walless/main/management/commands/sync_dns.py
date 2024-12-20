@@ -11,7 +11,7 @@ logger = logging.getLogger('walless')
 
 class Command(BaseCommand):
     help = 'Sync DNS A, AAAA, and CNAME records'
-    
+
     def handle(self, **kwargs):
         setup_everything(log_paths=[os.path.expanduser('~/.var/log/walless_cron.log')])
         nodes = db.all_servers(get_mix=True, get_relays=True, include_delete=False)
@@ -43,6 +43,6 @@ class Command(BaseCommand):
                 if scope not in node.dns[4].cname or node.dns[4].cname[scope] != db_cname:
                     logger.warning(
                         f'{scope} CNAME for {node.name} is missing. '
-                        'It should be {db_cname}. Modifying it now.'
+                        f'It should be {db_cname}. Modifying it now.'
                     )
                     hw.add_mod_cname(node.urls(4), **{scope+'_cname': db_cname})
