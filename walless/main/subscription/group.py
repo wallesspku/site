@@ -67,10 +67,14 @@ class Group(LogicNode):
                 clusters[key].append(node)
 
         for key, cluster in clusters.items():
+            # suppose k out of n nodes are selected, then the order of the first k
+            # nodes will be used
+            # e.g. we have nodes 3, 4, 5, 10, 12 and would like to select 2 nodes
+            # the resultant nodes have the order 3 and 4, regardless what are selected
             cluster.sort()
             # TODO: make #nodes configurable
+            node_orders = sorted([n.node_order for n in cluster])
             selected = weighted_sample(ur.rng, cluster, [n.node_weight for n in cluster], 2)
-            node_orders = sorted([n.node_order for n in selected])
             for i, node in enumerate(selected):
                 old_i = node_pattern.findall(node.name)[0][1]
                 node.name = node.name.replace(f'{key[0]}{old_i}', f'{key[0]}{i+1}')
