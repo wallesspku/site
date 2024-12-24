@@ -2,11 +2,31 @@ from django.core.management.base import BaseCommand
 import os
 import logging
 
-from walless_utils import setup_everything, cfg, db
+from walless_utils import setup_everything, cfg, db, Node
 from walless_utils.api.cloudflare import Cloudflare
 from walless_utils.api.huawei import Huawei
 
 logger = logging.getLogger('walless')
+
+
+def cname_match(node: Node):
+    if len(node.mix) == 0:
+        # if mix is not set, it should point to itself
+        if len(node.dns[4].cname) != 1:
+            return False
+        return set(node.dns[4].cname['default_view']['records']) == {node.real_urls(4)+'.'}
+
+    # otherwise, check each item individually
+    if not set(node.dns[4].cname) != set(node.mix):
+        return False
+    for line in node.mix:
+        if set(node_records(node, line)) != set(node.dns[4].cname[line]['records']):
+            return False
+    return True
+
+
+def node_records(node: Node, line: str):
+    return [tgt.real_urls(4) + '.' for tgt in node.mix[line]]
 
 
 class Command(BaseCommand):
@@ -33,16 +53,14 @@ class Command(BaseCommand):
         # apply the mix settings on DB to huawei cloud, if mismatched
         # only ipv4 (A record) will be mapped
         for node in nodes:
-            for scope in ['default', 'edu']:
-                if node.ip(4) is None:
-                    continue
-                if scope in node.mix:
-                    db_cname = node.mix[scope].real_urls(4)
-                else:
-                    db_cname = node.real_urls(4)
-                if scope not in node.dns[4].cname or node.dns[4].cname[scope] != db_cname:
-                    logger.warning(
-                        f'{scope} CNAME for {node.name} is missing. '
-                        f'It should be {db_cname}. Modifying it now.'
-                    )
-                    hw.add_mod_cname(node.urls(4), **{scope+'_cname': db_cname})
+            if cname_match(node):
+                continue
+            logger.warning(f'CNAME for {node.name} mismatches. Fixing it now.')
+            # we do not modify records; we delete and recreate them
+            for content in node.dns[4].cname.values():
+                hw.delete_record(content['id'])
+            if 'default_view' not in node.mix:
+                node.mix['default_view'] = node
+            for line in node.mix:
+                records = node_records(node, line)
+                hw.add_record_set(node.urls(4)+'.', line, records)

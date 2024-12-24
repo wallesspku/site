@@ -7,6 +7,7 @@ from django.db.models import (
 import shortuuid
 
 from .constants import MAX_EMAIL_HEADER_LENGTH
+from walless_utils.utils import HUAWEI_LINES
 
 
 def node_uuid():
@@ -64,8 +65,7 @@ class Node(Model):
 class Mix(Model):
     source = ForeignKey(Node, on_delete=CASCADE, related_name='mix_source')
     target = ForeignKey(Node, on_delete=CASCADE, related_name='mix_target')
-    # this could either be edu or cn
-    scope = CharField(max_length=30, null=False, default='edu', choices={'edu': 'edu', 'default': 'default'})
+    scope = CharField(max_length=30, null=False, default='Jiaoyuwang', choices={k: k for k in HUAWEI_LINES})
 
     def __str__(self) -> str:
         return f'<Mix {self.source} to {self.target}, {self.scope}>'
