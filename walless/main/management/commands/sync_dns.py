@@ -20,13 +20,17 @@ def cname_match(node: Node):
     if not set(node.dns[4].cname) != set(node.mix):
         return False
     for line in node.mix:
+        if line not in node.dns[4].cname:
+            return False
         if set(node_records(node, line)) != set(node.dns[4].cname[line]['records']):
             return False
     return True
 
 
 def node_records(node: Node, line: str):
-    return [tgt.real_urls(4) + '.' for tgt in node.mix[line]]
+    if line in node.mix:
+        return [tgt.real_urls(4) + '.' for tgt in node.mix[line]]
+    return []
 
 
 class Command(BaseCommand):
@@ -60,7 +64,7 @@ class Command(BaseCommand):
             for content in node.dns[4].cname.values():
                 hw.delete_record(content['id'])
             if 'default_view' not in node.mix:
-                node.mix['default_view'] = node
+                node.mix['default_view'] = [node]
             for line in node.mix:
                 records = node_records(node, line)
                 hw.add_record_set(node.urls(4)+'.', line, records)
