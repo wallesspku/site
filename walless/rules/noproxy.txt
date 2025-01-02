@@ -9,3 +9,6 @@ DOMAIN-KEYWORD,microsoft
 DOMAIN-KEYWORD,msft
 DOMAIN-KEYWORD,outlook
 DOMAIN-SUFFIX,cn.bing.com
+DOMAIN,steamcdn-a.akamaihd.net
+DOMAIN-SUFFIX,cm.steampowered.com
+DOMAIN-SUFFIX,steamserver.net
