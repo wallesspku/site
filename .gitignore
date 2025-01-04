@@ -1,4 +1,8 @@
 test_config
+scripts/ca
+scripts/acme.sh
+scripts/.last_balance_check
+scripts/update_ca.sh
 
 static_files/
 .idea/
