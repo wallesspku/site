@@ -17,10 +17,7 @@ ExecStart=$WALLESS_VENV/bin/python3 manage.py runserver 127.0.0.1:9011
 TimeoutStopSec=infinity
 Restart=on-failure
 
-Environment="WALLESS_ROOT=$WALLESS_ROOT"
-Environment="WALLESS_VENV=$WALLESS_VENV"
-Environment="EARLY_SETUP=1"
-Environment="GHPAT=$GHPAT"
+EnvironmentFile=$WALLESS_ROOT/envs
 
 [Install]
 WantedBy=multi-user.target
