@@ -6,3 +6,4 @@ dkimpy
 mssql-django
 mysqlclient
 shortuuid
+toml

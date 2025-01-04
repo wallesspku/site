@@ -20,6 +20,7 @@ Restart=on-failure
 Environment="WALLESS_ROOT=$WALLESS_ROOT"
 Environment="WALLESS_VENV=$WALLESS_VENV"
 Environment="EARLY_SETUP=1"
+Environment="GHPAT=$GHPAT"
 
 [Install]
 WantedBy=multi-user.target
