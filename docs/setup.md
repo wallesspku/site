@@ -13,7 +13,7 @@ After=network-online.target nss-lookup.target
 Type=exec
 User=$USER
 WorkingDirectory=$WALLESS_ROOT/site/walless
-ExecStart=$WALLESS_VENV/bin/python3 manage.py runserver 127.0.0.1:9011
+ExecStart=$WALLESS_VENV/bin/python3 manage.py runserver --skip-checks --noreload --no-color 127.0.0.1:9011
 TimeoutStopSec=infinity
 Restart=on-failure
 
