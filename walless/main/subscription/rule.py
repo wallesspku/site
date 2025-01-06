@@ -29,6 +29,7 @@ class Rule:
 
         self._rule_lists['default'] = append_rule([
             ('academics', 'DIRECT'),
+            ('noproxy', 'DIRECT'),
             ('gfw', GROUPS['gfw']),
             ('china', 'DIRECT'),
             ('local', 'DIRECT'),
