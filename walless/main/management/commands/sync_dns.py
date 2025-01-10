@@ -50,7 +50,7 @@ class Command(BaseCommand):
                 if node.ip(proto) is not None and node.dns[proto].ip != node.ip(proto):
                     logger.warning(
                         f'The IPv{proto} of {node.name} mismatches. '
-                        'Setting its DNS records to {node.ip(proto)}.'
+                        f'Setting its DNS records to {node.ip(proto)}.'
                     )
                     cf.update_dns(node.real_urls(proto), node.ip(proto))
 
