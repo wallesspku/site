@@ -23,7 +23,7 @@ def save_csv(out_path: Path, columns: List[str], sql: str, args=None):
     Save the result of the sql query to a csv file.
     """
     items = db.execute(sql, query=True, args=args)
-    os.makedirs(out_path.parent, exist_ok=True)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, 'w') as f:
         f.write(','.join(columns) + '\n')
         for item in items:
@@ -36,13 +36,15 @@ def iterate_save(out_dir: Path, columns: List[str], sql: str, use_ts: bool):
     cur = datetime(2024, 11, 21).date()
     while cur < today:
         file_name = cur.strftime('%y%m%d') + '.csv'
-        if not os.path.exists(out_dir/file_name):
-            if use_ts:
-                start = datetime.combine(cur, datetime.min.time()).timestamp()
-                args = (start, start + 86400)
-            else:
-                args = (cur,)
-            save_csv(out_path=out_dir/file_name, columns=columns, sql=sql, args=args)
+        if (out_dir/file_name).exists() or (out_dir/file_name+'.gz').exists():
+            cur += timedelta(days=1)
+            continue
+        if use_ts:
+            start = datetime.combine(cur, datetime.min.time()).timestamp()
+            args = (start, start + 86400)
+        else:
+            args = (cur,)
+        save_csv(out_path=out_dir/file_name, columns=columns, sql=sql, args=args)
         cur += timedelta(days=1)
 
 
@@ -51,6 +53,9 @@ def main():
     parser.add_argument('-o', type=str, help='Directory to save db backups.')
     args = parser.parse_args()
     out_dir = Path(args.o)
+    if not out_dir.exists():
+        logger.error(f'{out_dir} does not exist!')
+        return
 
     db_setup()
     # probe table: delete records older than 2 days
