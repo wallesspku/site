@@ -36,7 +36,7 @@ def iterate_save(out_dir: Path, columns: List[str], sql: str, use_ts: bool):
     cur = datetime(2024, 11, 21).date()
     while cur < today:
         file_name = cur.strftime('%y%m%d') + '.csv'
-        if (out_dir/file_name).exists() or (out_dir/file_name+'.gz').exists():
+        if (out_dir/file_name).exists() or (out_dir/(file_name+'.gz')).exists():
             cur += timedelta(days=1)
             continue
         if use_ts:
