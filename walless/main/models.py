@@ -48,7 +48,7 @@ class Node(Model):
     download = BigIntegerField(null=False, default=0)
 
     # traffic plan; reset day is the day of the month.
-    traffic_reset_day = IntegerField(null=False, default=1)
+    traffic_reset_day = FloatField(null=False, default=1.)
     # traffic unit is GiB.
     traffic_limit = BigIntegerField(null=True, default=None, blank=True)
 
