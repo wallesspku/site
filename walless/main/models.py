@@ -48,13 +48,13 @@ class Node(Model):
     download = BigIntegerField(null=False, default=0)
 
     # traffic plan; reset day is the day of the month.
-    traffic_reset_day = FloatField(null=False, default=1.)
+    traffic_reset_day = IntegerField(null=False, default=1)
     # traffic unit is GiB.
     traffic_limit = BigIntegerField(null=True, default=None, blank=True)
 
     def __str__(self):
         return f'<Node {self.node_id} {self.name}>'
-    
+
     def save(self, *args, **kwargs):
         for fie in ['ipv4', 'ipv6', 'remarks', 'idc', 'properties']:
             if getattr(self, fie) == '':
@@ -102,7 +102,7 @@ class User(Model):
 
     def __str__(self):
         return f'<user {self.user_id} {self.email}>'
-    
+
     def save(self, *args, **kwargs):
         for fie in ['remarks', 'tag']:
             if getattr(self, fie) == '':
@@ -146,7 +146,7 @@ class Relay(Model):
 
     def __str__(self):
         return f'<Relay {self.relay_id} from {self.source} to {self.target}>'
-    
+
     def save(self, *args, **kwargs):
         for fie in ['tunnel', 'tag', 'properties']:
             if getattr(self, fie) == '':
@@ -182,7 +182,7 @@ class Traffic(Model):
             Index(fields=['ut_date'], name="date"),
             Index(fields=['node', 'user', 'ut_date'], name="node_user_date"),
         ]
-    
+
     def __str__(self):
         return f'<Traffic {self.ut_date} {self.user} {self.node}>'
 
@@ -201,7 +201,7 @@ class UserTraffic(Model):
             Index(fields=['user'], name="user_traffic_user"),
             Index(fields=['user', 'ut_date'], name="user_traffic_user_date"),
         ]
-    
+
     def __str__(self):
         return f'<User Traffic {self.ut_date} {self.user}>'
 
@@ -220,7 +220,7 @@ class NodeTraffic(Model):
             Index(fields=['node'], name="node_traffic_node"),
             Index(fields=['node', 'ut_date'], name="node_traffic_node_date"),
         ]
-    
+
     def __str__(self):
         return f'<Node Traffic {self.ut_date} {self.node}>'
 
