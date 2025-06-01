@@ -1,9 +1,9 @@
-django
+django==5.0.13
+mssql-django==1.5
 python-dateutil
 pyyaml
 requests
 dkimpy
-mssql-django
 mysqlclient
 shortuuid
 toml
