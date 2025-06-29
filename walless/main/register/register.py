@@ -28,6 +28,8 @@ def register_user(email):
         user_pool.pull(True)
         user = user_pool.email2user.get(email)
         if user is not None:
+            if user.blocked:
+                raise Http404("You are blocked.")
             if user.enabled:
                 logger.warning("User already in database and it has been enabled. Addition aborted.")
                 return user
