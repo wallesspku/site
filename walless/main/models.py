@@ -253,7 +253,7 @@ class AbuseEvent(Model):
     user = ForeignKey(User, on_delete=CASCADE, related_name='abuse_events')
     node = ForeignKey(Node, on_delete=PROTECT, related_name='abuse_events')
     ts = IntegerField(null=False, default=current_unix)
-    reason = CharField(max_length=50, null=False)
+    reason = TextField(null=False, default='', blank=True)
 
     def __str__(self):
         return f'<AbuseEvent {self.user} {self.node} {self.reason}>'
