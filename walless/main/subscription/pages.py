@@ -43,7 +43,9 @@ def _clash_sub_page(request, email, password):
     if user_obj is None or user_obj.password != password:
         logger.warning(f'{email} asked for subs, but password does not match!')
         raise Http404('Password is wrong.')
-    if not user_obj.enabled:
+    if not user_obj.valid:
+        if user_obj.blocked:
+            raise Http404('You are blocked.')
         logger.warning(f'{email} asked for subs, but it is disabled. Re-enable it.')
         db.enable_user(user_obj.user_id, True)
     time_verify = time.time() - since
@@ -55,7 +57,7 @@ def _clash_sub_page(request, email, password):
         int(time.time()),
         get_client_ip(request),
         f'{ur.client}/{ur.client_version}',
-        ur.group, 
+        ur.group,
         user_obj.user_id)
     )
     time_sublog = time.time() - since
