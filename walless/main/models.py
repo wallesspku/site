@@ -246,3 +246,14 @@ class Push(Model):
 
     def __str__(self):
         return str(self.t)
+
+
+class AbuseEvent(Model):
+    event_id = AutoField(primary_key=True)
+    user = ForeignKey(User, on_delete=CASCADE, related_name='abuse_events')
+    node = ForeignKey(Node, on_delete=PROTECT, related_name='abuse_events')
+    ts = IntegerField(null=False, default=current_unix)
+    reason = CharField(max_length=50, null=False)
+
+    def __str__(self):
+        return f'<AbuseEvent {self.user} {self.node} {self.reason}>'

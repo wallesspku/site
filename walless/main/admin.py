@@ -11,11 +11,11 @@ class NodeAdmin(admin.ModelAdmin):
     @admin.decorators.display(description='visible', boolean=True)
     def visible(self, obj):
         return not obj.hidden and not obj.deleted
-    
+
     @admin.decorators.display(description='traffic', boolean=False, ordering='download')
     def traffic(self, obj) -> float:
         return data_format(obj.upload + obj.download, decimal=True)
-    
+
     fieldsets = [
         (
             None,
@@ -37,11 +37,11 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = ['tag', 'enabled']
     list_display = ['email', 'user_id', 'tag', 'enabled', 'traffic']
     search_fields = ['email', 'user_id']
-    
+
     @admin.decorators.display(description='traffic', boolean=False, ordering='download')
     def traffic(self, obj) -> float:
         return data_format(obj.upload + obj.download, decimal=True)
-    
+
     fields = ['enabled', 'email', 'password', 'tag', 'last_change', 'balance', 'remarks']
 
 
@@ -63,6 +63,7 @@ admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Node, NodeAdmin)
 admin.site.register(models.Relay, RelayAdmin)
 admin.site.register(models.Mix, MixAdmin)
+admin.site.register(models.AbuseEvent)
 # admin.site.register(models.Probe)
 # admin.site.register(models.Registration)
 # admin.site.register(models.Sublog)
