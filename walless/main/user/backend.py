@@ -16,6 +16,8 @@ def profile_info(email, password):
     if user_obj is None or user_obj.password != password:
         logger.error(f'User {email} not found, or password not matched.')
         raise Http404
+    if not user_obj.valid:
+        raise Http404('User is not valid.')
     user_obj = deepcopy(user_obj)
 
     user_obj.percentage = 100 - (int(user_obj.balance)) * 100 // user_obj.total_data

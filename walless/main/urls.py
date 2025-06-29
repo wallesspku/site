@@ -19,7 +19,7 @@ urlpatterns = [
 
 if os.environ.get('MAIN_SUBS_SERVER', '0') == '1':
     # Only one server can do these!
-    logging.warning("Consider this node as the main subs server.")
+    logger.warning("Consider this node as the main subs server.")
     urlpatterns.extend([
         path('', verify_page),
         path('verify', verify_page),
