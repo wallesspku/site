@@ -74,6 +74,7 @@ class Mix(Model):
 class User(Model):
     user_id = IntegerField(primary_key=True, unique=True)
     enabled = BooleanField(default=True)
+    blocked = BooleanField(default=False)
     email = EmailField(max_length=50, null=False, unique=True)
     username = CharField(max_length=50, null=False)
     password = CharField(max_length=50, null=False)
@@ -98,6 +99,7 @@ class User(Model):
             Index(fields=["uuid"]),
             Index(fields=["last_change"]),
             Index(fields=['enabled']),
+            Index(fields=['blocked']),
         ]
 
     def __str__(self):
